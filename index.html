@@ -1,16 +1,20 @@
 <!DOCTYPE html>
 <html>
 <head>
+<!--
 <meta name="viewport" content="width=device-width, height=device-height, initial-scale=1, minimum-scale=1, maximum-scale=1, user-scalable=no" />
+
+
 	<meta charset="utf-8">
 	
 	<meta http-equiv='cache-control' content='no-cache'>
 	<meta http-equiv='expires' content='0'>
 	<meta http-equiv='pragma' content='no-cache'>
+-->
 <script src="https://cdn.jsdelivr.net/npm/jquery/dist/jquery.min.js"></script>
 
 
-
+<!--
 <style>
 /*
 .mr10 {margin-right: 10px;}
@@ -62,9 +66,10 @@ tbody>tr:nth-child(even)>td,
 .fs30 {
   font-size: 30px;
 }
-*/
 
+*/
 </style>
+-->
 </head>
 <body>
 
@@ -248,6 +253,14 @@ tbody>tr:nth-child(even)>td,
 //tableStyle.classList.add('fs30');
 
 function begin() {
+	document.head.innerHTML += "<meta name='viewport' content='width=device-width, height=device-height, initial-scale=1, minimum-scale=1, maximum-scale=1, user-scalable=no' \/>"
+	document.head.innerHTML += "<meta charset='utf-8'>"
+	
+	document.head.innerHTML += "<meta http-equiv='cache-control' content='no-cache'>"
+	document.head.innerHTML += "<meta http-equiv='expires' content='0'>"
+	document.head.innerHTML += "<meta http-equiv='pragma' content='no-cache'>"
+    
+
 	var link = GetLink();
     link = link + "?para1=F001"; 
     link = link + "&para2=" + "QUANGTHU_LIBRARY";
@@ -280,534 +293,28 @@ function begin2(y,loai) {
         	arr[i][j] = decrypt(timthay, arr[i][j]).trim();
         }
     }
-    
-    
-    
-    
-    //loadjscssfile(arr[2][0], "css");
-    
-    //alert(arr[2][0]);
+
     
     document.head.innerHTML +=  arr[2][0];
     
     document.body.innerHTML = arr[0][0];
     
-    
     window.$table = $('#table')
+    
+    eval(arr[4][0]);
+    
+
+
         		
 }
 
-function myFunction1() {
-
-	$table.bootstrapTable('showLoading');
-	
-      var link = GetLink();
-      link = link + "?para1=F001"; 
-      link = link + "&para2=" + "QUANGTHU_DATA";
-    
-      
-    var loai = "json";
-	QgetData(link, loai);
-}
-
-function QgetData(link, loai) {
-
-	fetch (link)
-	.then(x => Q001(x,loai))
-	.then(y => Q002(y,loai));
-}
-
-function Q001(x, loai) {
-	if(loai=='json') return x.json(); 
-	if(loai=='text') return x.text(); 
-}
-
-function Q002(y,loai) {
-	var arr = y.records.map(doc => Object.values(doc));
-        
-        var val_tam = arr[arr.length-1][0] ;
-        var timthay = '';
-        for(var i=0; i<=2; i++) {
-        	key = 'QTDU' + GetThoiGian(12, i);
-            if(decrypt(key,val_tam) === 'Quang Thu Dũng Uyên') {
-            	timthay = key;
-            	break;
-            }
-        }
-        
-        if(timthay == '') {
-        	$table.bootstrapTable('hideLoading');
-        	return;
-        }
- /*       
-        arr = arr.map(function mapper(s) {
-          if (Array.isArray(s)) {
-            return s.map(mapper);
-          } else {
-            //return s.toString().trim();
-            //s = window['NenGiaiNenChuoi'](2, s);
-		  	//var st = decrypt('Q.t.2011.0512', s.toString()).trim();
-            var st = decrypt(timthay, s.toString()).trim();
-		  
-            return  st;
-          }
-        });
- */       
-
-        for(var i=0; i<arr.length; i++) {
-        	for(var j=0; j<arr[i].length; j++) {
-        		arr[i][j] = decrypt(timthay, arr[i][j]).trim();
-        	}
-        }
-        
-        //alert(arr[0][2])
-        
-        var arr_option = arr_option_table;
-		
-        //window['columns'] = buildColumns(arr_head, 3);
-        var arr_pos = FindStringInArray(arr_option,'columns');
-        var arr_head = [toObject(arr_columns,1,'')]
-        arr_option[arr_pos[0]][arr_pos[1]+1] = buildColumns(arr_head, arr[0]);
-        
-        str_replace = $('#height').prop('checked') ? 600 : undefined
-        arr_pos = FindStringInArray(arr_option,'height');
-        arr_option[arr_pos[0]][arr_pos[1]+1] = str_replace;
-        
-        str_replace = +$('#fixedNumber').val();
-        arr_pos = FindStringInArray(arr_option,'fixedNumber');
-        arr_option[arr_pos[0]][arr_pos[1]+1] = str_replace;
-        
-        str_replace = +$('#fixedRightNumber').val();
-        arr_pos = FindStringInArray(arr_option,'fixedRightNumber');
-        arr_option[arr_pos[0]][arr_pos[1]+1] = str_replace;
-        
-        
-		var arr_data = []
-        for(var i=1; i< arr.length - 1; i++) {
-        	arr_data[i-1] = toObject(arr[i], 2, 'field')
-        }
-        arr_pos = FindStringInArray(arr_option,'data');
-        arr_option[arr_pos[0]][arr_pos[1]+1] = arr_data;
-        
-        
-        buildTable($table, arr_option);
-        $table.bootstrapTable('hideLoading');
-        
-        
-        
-		for(var i=0; i<arr.length; i++) {
-            arr[i][arr[i].length] = 'ghi chú';
-        }
-		
-}
 
 
 
-	function loadjscssfile(filename, filetype){
-        if (filetype=="js"){ //if filename is a external JavaScript file
-            var fileref=document.createElement('script')
-            fileref.setAttribute("type","text/javascript")
-            fileref.setAttribute("src", filename)
-        }
-        else if (filetype=="css"){ //if filename is an external CSS file
-            var fileref=document.createElement("link")
-            fileref.setAttribute("rel", "stylesheet")
-            fileref.setAttribute("type", "text/css")
-            fileref.setAttribute("href", filename)
-        }
-        if (typeof fileref!="undefined")
-            document.getElementsByTagName("head")[0].appendChild(fileref)
-    }
-    
-  function GetText(url, fkt) {
-                    var xhttp = new XMLHttpRequest();
-                    xhttp.onreadystatechange = function() {
-                        if (this.readyState === 4 && this.status === 200) {
-                          
-                            return this.responseText;
-                        }
-                    }
-                    xhttp.open("GET", url, false);
-                    xhttp.send();
-                    if (typeof fkt === 'undefined') {
-                      
-                        return xhttp.responseText;
-                    } else {
-                        return fkt(xhttp.responseText);
-                    }
-                }
-                
-
-    function task1(){
-    //const task1 = ()=>{
-      //""
-      
-      
-        
-        var css_ext = ['https://cdn.jsdelivr.net/npm/bootstrap@4.6.0/dist/css/bootstrap.min.css',
-                'https://unpkg.com/@fortawesome/fontawesome-free@5.12.1/css/all.min.css',
-                'https://unpkg.com/bootstrap-table@1.21.2/dist/bootstrap-table.min.css',
-                'https://unpkg.com/bootstrap-table@1.21.2/dist/extensions/fixed-columns/bootstrap-table-fixed-columns.min.css',
-                'https://unpkg.com/bootstrap-table@1.21.2/dist/extensions/page-jump-to/bootstrap-table-page-jump-to.min.css'];
-
-
-      for(var k=0; k<css_ext.length; k++) {
-          loadjscssfile(css_ext[k], "css"); 
-        }
-        
-
-        
-        var js_ext = ['https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js',
-                'https://cdn.jsdelivr.net/npm/bootstrap@4.6.0/dist/js/bootstrap.min.js',
-                'https://unpkg.com/bootstrap-table@1.21.2/dist/bootstrap-table.min.js',
-                'https://unpkg.com/bootstrap-table@1.21.2/dist/extensions/fixed-columns/bootstrap-table-fixed-columns.min.js',
-                'https://unpkg.com/bootstrap-table@1.21.2/dist/extensions/page-jump-to/bootstrap-table-page-jump-to.min.js',
-                'https://unpkg.com/bootstrap-table@1.21.2/dist/extensions/multiple-sort/bootstrap-table-multiple-sort.js',
-                'https://cdn.jsdelivr.net/npm/tableexport.jquery.plugin@1.10.21/tableExport.min.js',
-                'https://cdn.jsdelivr.net/npm/tableexport.jquery.plugin@1.10.21/libs/jsPDF/jspdf.min.js',
-                'https://cdn.jsdelivr.net/npm/tableexport.jquery.plugin@1.10.21/libs/jsPDF-AutoTable/jspdf.plugin.autotable.js',
-                'https://unpkg.com/bootstrap-table@1.21.2/dist/extensions/export/bootstrap-table-export.min.js',
-                'https://unpkg.com/bootstrap-table@1.21.2/dist/extensions/print/bootstrap-table-print.min.js'];
-                        
-
-        
-        for(var k=0; k<js_ext.length; k++) {
-          eval(GetText(js_ext[k]));
-        }
-        
-		
-        
-
-    }
-
-    //const task2 = ()=>{
-    function task2(){  
-      
-       Run();
-
-    }
-
-    async function asyncCall(){
-      await task1(); // then task2 want start until the task1 finishes
-      task2();
-    };
-
-    asyncCall();
-
-  //var $table = $('#table')
-  
-  function FindStringInArray(rows, str) {
-  	let colIndex = -1;
-    const rowIndex = rows.findIndex((row) => {
-      const foundColIndex = row.indexOf(str);
-      if (foundColIndex !== -1) {
-        colIndex = foundColIndex;
-        return true;
-      }
-    });
-    
-    return [rowIndex, colIndex];
-  }
-  
-  var arr_option_table = [['height', 800],
-      					['columns', 'columns ][ array'],
-                        ['data', 'data ][ array'],
-                        ['search', 'true'],
-                        ['pagination', 'true'],
-                        ['showJumpTo', 'true'],
-                        ['sidePagination', 'true'],
-                        ['showColumns', 'true'],
-                        ['showToggle', 'true'],
-                        ['showMultiSort', 'true'],
-                        ['showExport', 'true'],
-                        ['showPrint', 'true'],
-                        ['clickToSelect', 'false'],
-                        ['fixedColumns', 'true'],
-                        ['fixedNumber', 'fixedNumber ][ val'],
-                        ['fixedRightNumber', 'fixedRightNumber ][ val']
-                     ];
-                     
-  var arr_columns = [['field', 'state'],
-      						['checkbox', 'true'],
-                            ['valign', 'middle']
-      					]
-  
-  function Run() {
-
-
-    $(function() {
-      
-	/*
-      $('#build').click(function () {
-      
-      
-      
-        var arr_option = arr_option_table;
-		
-        var cells = +$('#cells').val();
-      	var rows = +$('#rows').val();
-        var arr = [[]];
-        for(var i=0; i<cells; i++) {
-        	arr[0][i] = "Cell" + i;
-        }
-        
-        for (var i = 0; i < rows; i++) {
-          var arr_tam = [];
-          for (var j = 0; j < cells; j++) {
-          
-            arr_tam[j] = 'Row-' + i + '-' + j;
-          }
-          arr[i+1] = arr_tam;
-        }
-        
-        
-        var arr_pos = FindStringInArray(arr_option,'columns');
-        var arr_head = [toObject(arr_columns,1,'')]
-        arr_option[arr_pos[0]][arr_pos[1]+1] = buildColumns(arr_head, arr[0]);
-        
-        str_replace = $('#height').prop('checked') ? 400 : undefined
-        arr_pos = FindStringInArray(arr_option,'height');
-        arr_option[arr_pos[0]][arr_pos[1]+1] = str_replace;
-        
-        str_replace = +$('#fixedNumber').val();
-        arr_pos = FindStringInArray(arr_option,'fixedNumber');
-        arr_option[arr_pos[0]][arr_pos[1]+1] = str_replace;
-        
-        str_replace = +$('#fixedRightNumber').val();
-        arr_pos = FindStringInArray(arr_option,'fixedRightNumber');
-        arr_option[arr_pos[0]][arr_pos[1]+1] = str_replace;
-        
-        
-		var arr_data = []
-        for(var i=1; i< arr.length; i++) {
-        	arr_data[i-1] = toObject(arr[i], 2, 'field')
-        }
-        arr_pos = FindStringInArray(arr_option,'data');
-        arr_option[arr_pos[0]][arr_pos[1]+1] = arr_data;
-        
-        
-        
-        buildTable($table, arr_option);
-      })
-      
-      */
-    })
-    
-    
-    
-  }
-  
-  function RebuildTable() {
-  
-  	var arr_option = arr_option_table;
-		
-        var cells = +$('#cells').val();
-      	var rows = +$('#rows').val();
-        var arr = [[]];
-        for(var i=0; i<cells; i++) {
-        	arr[0][i] = "Cell" + i;
-        }
-        
-        for (var i = 0; i < rows; i++) {
-          var arr_tam = [];
-          for (var j = 0; j < cells; j++) {
-          
-            arr_tam[j] = 'Row-' + i + '-' + j;
-          }
-          arr[i+1] = arr_tam;
-        }
-        
-        
-        var arr_pos = FindStringInArray(arr_option,'columns');
-        var arr_head = [toObject(arr_columns,1,'')]
-        arr_option[arr_pos[0]][arr_pos[1]+1] = buildColumns(arr_head, arr[0]);
-        
-        str_replace = $('#height').prop('checked') ? 400 : undefined
-        arr_pos = FindStringInArray(arr_option,'height');
-        arr_option[arr_pos[0]][arr_pos[1]+1] = str_replace;
-        
-        str_replace = +$('#fixedNumber').val();
-        arr_pos = FindStringInArray(arr_option,'fixedNumber');
-        arr_option[arr_pos[0]][arr_pos[1]+1] = str_replace;
-        
-        str_replace = +$('#fixedRightNumber').val();
-        arr_pos = FindStringInArray(arr_option,'fixedRightNumber');
-        arr_option[arr_pos[0]][arr_pos[1]+1] = str_replace;
-        
-        
-		var arr_data = []
-        for(var i=1; i< arr.length; i++) {
-        	arr_data[i-1] = toObject(arr[i], 2, 'field')
-        }
-        arr_pos = FindStringInArray(arr_option,'data');
-        arr_option[arr_pos[0]][arr_pos[1]+1] = arr_data;
-        
-        
-        
-        buildTable($table, arr_option);
-  }
-  
-  function buildColumns(arr_tam, arr) {
-
-  	for (var i = 0; i < arr.length; i++) {
-          arr_tam.push({
-            field: 'field' + i,
-            title: arr[i],
-            sortable: true,
-            valign: 'top', //middle
-            formatter: function (val) {
-              return '<div class="item">' + val + '</div>'
-            },
-            events: {
-              'click .item': function (e) {
-                  alert(e.target.innerHTML);
-              }
-            }
-          })
-        }
-        
-    return arr_tam;
-  }
-  
-  
-  
-  function buildTable($el, arr_option) {
-  		
-   /*     
-      
-      var cells = +$('#cells').val()
-      var rows = +$('#rows').val()
-
-      var row
-      
-      var arr_columns = [['field', 'state'],
-      						['checkbox', 'true'],
-                            ['valign', 'middle']
-      					]
-      
-      var columns = [toObject(arr_columns,1)];
-      
-      
-      var columns = [
-        {
-          field: 'state',
-		checkbox: true,
-          valign: 'middle'
-        }
-      ]
-      
-      var data = []
-
-      for (var i = 0; i < cells; i++) {
-        columns.push({
-          field: 'field' + i,
-          title: 'Cell' + i,
-          sortable: true,
-          valign: 'middle',
-          formatter: function (val) {
-            return '<div class="item">' + val + '</div>'
-          },
-          events: {
-            'click .item': function (e) {
-              //console.log('click');
-				alert(e.target.innerHTML);
-            }
-          }
-        })
-      }
-      
-      
-      for (var i = 0; i < rows; i++) {
-        row = {}
-        for (var j = 0; j < cells + 3; j++) {
-          row['field' + j] = 'Row-' + i + '-' + j
-        }
-        data.push(row)
-      }
-      
-      
-	 //data = [{field0: 1, field1: 2, field2: 3},
-     //		{field0: 1, field1: 5, field2: 6},
-     //       {field0: 2, field1: 5, field2: 6}]
-      
-      //columns = arr_head;
-      window['columns'] = columns;
-      
-      window['data'] = data;
-	      //arr_option = [['height', $('#height').prop('checked') ? 400 : undefined],
-          
-  /*    	
-        arr_option = [['height', 400],
-      					['columns', 'columns ][ array'],
-                        ['data', 'data ][ array'],
-                        ['search', 'true'],
-                        ['pagination', 'true'],
-                        ['showJumpTo', 'true'],
-                        ['sidePagination', 'true'],
-                        ['showColumns', 'true'],
-                        ['showToggle', 'true'],
-                        ['showMultiSort', 'true'],
-                        ['showExport', 'true'],
-                        ['showPrint', 'true'],
-                        ['clickToSelect', 'false'],
-                        ['fixedColumns', 'true'],
-                        ['fixedNumber', 'fixedNumber ][ val'],
-                        ['fixedRightNumber', 'fixedRightNumber ][ val']
-                     ]
-     */  
-       var obj_option = toObject(arr_option, 1, '')    
-       
-                     
-      $el.bootstrapTable('destroy').bootstrapTable(obj_option)
-    }
-
-  
-  
-  function myFunction() {
-  	    
-    buildTable($table)
-      
-  }
-  
-  function toObject(arr, loai, prefix) {
-
-    var obj ={}
-	if(loai == 1) {
-    	arr.forEach(e => {
-
-          if(e[1] == 'true' || e[1] == 'false') {
-              e[1] = (e[1] == 'true') ? true : false;
-          } else {
-
-              try{
-
-                  var arr_tam = e[1].toString().split('][');
-                  if(arr_tam.length > 1) {
-                      if (arr_tam[1].trim() == 'val') e[1] = +$('#' + arr_tam[0].trim()).val();
-                      if (arr_tam[1].trim() == 'array') e[1] = window[arr_tam[0].trim()];
-                  } 
-
-              } catch(err) {}
-          }
-
-          Reflect.set(obj,e[0],e[1])
-      });
-    }
-    
-    if(loai ==2) {
-    var x=0;
-    	arr.forEach(e => {
-          	Reflect.set(obj,prefix + x,e);
-            x +=1;  
-      });
-    }
-    	
-
-    
-    return obj;
-  }
   
 </script>
+
+
 </html>
 
 
