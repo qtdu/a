@@ -1,11 +1,18 @@
 <!DOCTYPE html>
 <html>
 <head>
+<meta name="viewport" content="width=device-width, height=device-height, initial-scale=1, minimum-scale=1, maximum-scale=1, user-scalable=no" />
+	<meta charset="utf-8">
+	
+	<meta http-equiv='cache-control' content='no-cache'>
+	<meta http-equiv='expires' content='0'>
+	<meta http-equiv='pragma' content='no-cache'>
 <script src="https://cdn.jsdelivr.net/npm/jquery/dist/jquery.min.js"></script>
 
 
 
 <style>
+/*
 .mr10 {margin-right: 10px;}
 
 #toolbar {
@@ -50,7 +57,7 @@ tbody>tr:nth-child(even)>td,
     tbody>tr:nth-child(even)>th {
         background-color: LemonChiffon;
     }
-
+*/
 /*
 .fs30 {
   font-size: 30px;
@@ -60,6 +67,8 @@ tbody>tr:nth-child(even)>td,
 </style>
 </head>
 <body>
+
+<!--
 <button type="button" class="btn btn-primary" onclick="myFunction()">Click me</button>
 <button type="button" class="btn btn-success" onclick="myFunction1()">test getData</button>
 
@@ -81,7 +90,7 @@ tbody>tr:nth-child(even)>td,
     <input class="form-control mr10" id="cells" type="number" value="3" min="1" max="30">
     <span class="mr10">Rows: </span class="mr10">
     <input class="form-control mr10" id="rows" type="number" value="3" min="1" max="50">
-    <button id="build" class="btn btn-secondary">Rebuild Table</button>
+    <button id="build" class="btn btn-secondary" onclick="RebuildTable()">Rebuild Table</button>
   </div>
 </div>
 
@@ -94,8 +103,7 @@ tbody>tr:nth-child(even)>td,
 </div>
 <table id="table"></table>
 
-
-
+-->
 </body>
 <script>
 
@@ -239,13 +247,63 @@ tbody>tr:nth-child(even)>td,
 //var tableStyle = document.querySelector('table');            
 //tableStyle.classList.add('fs30');
 
+function begin() {
+	var link = GetLink();
+    link = link + "?para1=F001"; 
+    link = link + "&para2=" + "QUANGTHU_LIBRARY";
+    var loai = "json";
+	fetch (link)
+	.then(x => begin1(x,loai))
+	.then(y => begin2(y,loai));
+}
+begin();
+function begin1(x, loai) {
+	if(loai=='json') return x.json(); 
+	if(loai=='text') return x.text(); 
+}
+
+function begin2(y,loai) {
+	var arr = y.records.map(doc => Object.values(doc));
+    var val_tam = arr[arr.length-1][0] ;
+    var timthay = '';
+    for(var i=0; i<=2; i++) {
+    	key = 'QTDU' + GetThoiGian(12, i);
+        if(decrypt(key,val_tam) === 'Quang Thu Dũng Uyên') {
+            timthay = key;
+            break;
+        }
+    }
+         
+
+    for(var i=0; i<arr.length; i++) {
+        for(var j=0; j<arr[i].length; j++) {
+        	arr[i][j] = decrypt(timthay, arr[i][j]).trim();
+        }
+    }
+    
+    
+    
+    
+    //loadjscssfile(arr[2][0], "css");
+    
+    //alert(arr[2][0]);
+    
+    document.head.innerHTML +=  arr[2][0];
+    
+    document.body.innerHTML = arr[0][0];
+    
+    
+    window.$table = $('#table')
+        		
+}
+
 function myFunction1() {
 
 	$table.bootstrapTable('showLoading');
 	
       var link = GetLink();
       link = link + "?para1=F001"; 
-      link = link + "&para2=" + "QUANGTHU";
+      link = link + "&para2=" + "QUANGTHU_DATA";
     
       
     var loai = "json";
@@ -270,8 +328,8 @@ function Q002(y,loai) {
         var val_tam = arr[arr.length-1][0] ;
         var timthay = '';
         for(var i=0; i<=2; i++) {
-        	key = GetThoiGian(12, i);
-            if(decrypt(key,val_tam) === 'QTDU') {
+        	key = 'QTDU' + GetThoiGian(12, i);
+            if(decrypt(key,val_tam) === 'Quang Thu Dũng Uyên') {
             	timthay = key;
             	break;
             }
@@ -281,7 +339,7 @@ function Q002(y,loai) {
         	$table.bootstrapTable('hideLoading');
         	return;
         }
-        
+ /*       
         arr = arr.map(function mapper(s) {
           if (Array.isArray(s)) {
             return s.map(mapper);
@@ -294,6 +352,13 @@ function Q002(y,loai) {
             return  st;
           }
         });
+ */       
+
+        for(var i=0; i<arr.length; i++) {
+        	for(var j=0; j<arr[i].length; j++) {
+        		arr[i][j] = decrypt(timthay, arr[i][j]).trim();
+        	}
+        }
         
         //alert(arr[0][2])
         
@@ -326,8 +391,14 @@ function Q002(y,loai) {
         
         
         buildTable($table, arr_option);
-
-		$table.bootstrapTable('hideLoading');
+        $table.bootstrapTable('hideLoading');
+        
+        
+        
+		for(var i=0; i<arr.length; i++) {
+            arr[i][arr[i].length] = 'ghi chú';
+        }
+		
 }
 
 
@@ -405,7 +476,7 @@ function Q002(y,loai) {
         }
         
 		
-        window.$table = $('#table')
+        
 
     }
 
@@ -466,58 +537,10 @@ function Q002(y,loai) {
 
     $(function() {
       
-      
-      
-      
-       var arr_option = arr_option_table;
-		
-        var cells = 0;
-      	var rows = 0;
-        var arr = [[]];
-        for(var i=0; i<cells; i++) {
-        	arr[0][i] = "Cell" + i;
-        }
-        
-        for (var i = 0; i < rows; i++) {
-          var arr_tam = [];
-          for (var j = 0; j < cells; j++) {
-          
-            arr_tam[j] = 'Row-' + i + '-' + j;
-          }
-          arr[i+1] = arr_tam;
-        }
-        
-        
-        var arr_pos = FindStringInArray(arr_option,'columns');
-        var arr_head = [toObject(arr_columns,1,'')]
-        arr_option[arr_pos[0]][arr_pos[1]+1] = buildColumns(arr_head, arr[0]);
-        
-        str_replace = $('#height').prop('checked') ? 400 : undefined
-        arr_pos = FindStringInArray(arr_option,'height');
-        arr_option[arr_pos[0]][arr_pos[1]+1] = str_replace;
-        
-        str_replace = +$('#fixedNumber').val();
-        arr_pos = FindStringInArray(arr_option,'fixedNumber');
-        arr_option[arr_pos[0]][arr_pos[1]+1] = str_replace;
-        
-        str_replace = +$('#fixedRightNumber').val();
-        arr_pos = FindStringInArray(arr_option,'fixedRightNumber');
-        arr_option[arr_pos[0]][arr_pos[1]+1] = str_replace;
-        
-        
-		var arr_data = []
-        for(var i=1; i< arr.length; i++) {
-        	arr_data[i-1] = toObject(arr[i], 2, 'field')
-        }
-        arr_pos = FindStringInArray(arr_option,'data');
-        arr_option[arr_pos[0]][arr_pos[1]+1] = arr_data;
-        
-        
-        
-        buildTable($table, arr_option);
-      
-
+	/*
       $('#build').click(function () {
+      
+      
       
         var arr_option = arr_option_table;
 		
@@ -566,8 +589,62 @@ function Q002(y,loai) {
         
         buildTable($table, arr_option);
       })
+      
+      */
     })
     
+    
+    
+  }
+  
+  function RebuildTable() {
+  
+  	var arr_option = arr_option_table;
+		
+        var cells = +$('#cells').val();
+      	var rows = +$('#rows').val();
+        var arr = [[]];
+        for(var i=0; i<cells; i++) {
+        	arr[0][i] = "Cell" + i;
+        }
+        
+        for (var i = 0; i < rows; i++) {
+          var arr_tam = [];
+          for (var j = 0; j < cells; j++) {
+          
+            arr_tam[j] = 'Row-' + i + '-' + j;
+          }
+          arr[i+1] = arr_tam;
+        }
+        
+        
+        var arr_pos = FindStringInArray(arr_option,'columns');
+        var arr_head = [toObject(arr_columns,1,'')]
+        arr_option[arr_pos[0]][arr_pos[1]+1] = buildColumns(arr_head, arr[0]);
+        
+        str_replace = $('#height').prop('checked') ? 400 : undefined
+        arr_pos = FindStringInArray(arr_option,'height');
+        arr_option[arr_pos[0]][arr_pos[1]+1] = str_replace;
+        
+        str_replace = +$('#fixedNumber').val();
+        arr_pos = FindStringInArray(arr_option,'fixedNumber');
+        arr_option[arr_pos[0]][arr_pos[1]+1] = str_replace;
+        
+        str_replace = +$('#fixedRightNumber').val();
+        arr_pos = FindStringInArray(arr_option,'fixedRightNumber');
+        arr_option[arr_pos[0]][arr_pos[1]+1] = str_replace;
+        
+        
+		var arr_data = []
+        for(var i=1; i< arr.length; i++) {
+        	arr_data[i-1] = toObject(arr[i], 2, 'field')
+        }
+        arr_pos = FindStringInArray(arr_option,'data');
+        arr_option[arr_pos[0]][arr_pos[1]+1] = arr_data;
+        
+        
+        
+        buildTable($table, arr_option);
   }
   
   function buildColumns(arr_tam, arr) {
@@ -577,7 +654,7 @@ function Q002(y,loai) {
             field: 'field' + i,
             title: arr[i],
             sortable: true,
-            valign: 'middle',
+            valign: 'top', //middle
             formatter: function (val) {
               return '<div class="item">' + val + '</div>'
             },
