@@ -18,7 +18,7 @@
 <div class="WaitLoadCode_QTDU"></div>
 </body>
 <script>
-	window.reset = "0";
+	window.reset = "1";
     RunBegin();
     function RunBegin() {
     	window.encrypt = function(key, value) {
@@ -222,7 +222,7 @@
       function XuLy_urlParams() {
         var queryString = location.search;
             var urlParams = new URLSearchParams(queryString);
-            var url = window.location.hostname + window.location.pathname;
+            var url = "https://" + window.location.hostname + window.location.pathname;
 
 
             var co = urlParams.get('co');
