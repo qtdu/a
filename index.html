@@ -54,6 +54,21 @@
           for(i=0;i<value.length;++i){ result+=String.fromCharCode(key[i % key.length]^value.charCodeAt(i)); }
           return result;
         }
+        
+        window.Qtimthietbi = function() {
+			const toMatch = [
+					/Android/i,
+					/webOS/i,
+					/iPhone/i,
+					/iPad/i,
+					/iPod/i,
+					/BlackBerry/i,
+					/Windows Phone/i
+					];
+			window.thietbi = toMatch.some((toMatchItem) => { return navigator.userAgent.match(toMatchItem); });
+			window.root = document.querySelector(':root');
+		}
+		Qtimthietbi();
 
         window.GetThoiGian = function(num, offset){
           var now = new Date();
